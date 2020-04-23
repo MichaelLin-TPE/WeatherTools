@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">WeatherTools</string>
+    <string name="weather_tools">天氣工具大全</string>
+    <string name="broad_title_1">一般天氣預報-今明 36 小時天氣預報</string>
+    <string name="broad_title_2">鄉鎮天氣預報-宜蘭縣未來2天天氣預報</string>
+    <string name="broad_title_3">鄉鎮天氣預報-宜蘭縣未來1週天氣預報</string>
+    <string name="broad_title_4">鄉鎮天氣預報-桃園市未來2天天氣預報</string>
+    <string name="broad_title_5">鄉鎮天氣預報-桃園市未來1週天氣預報</string>
+    <string name="broad_title_6">鄉鎮天氣預報-新竹縣未來2天天氣預報</string>
+    <string name="broad_title_7">鄉鎮天氣預報-新竹縣未來1週天氣預報</string>
+    <string name="broad_title_8">鄉鎮天氣預報-苗栗縣未來2天天氣預報</string>
+    <string name="broad_title_9">鄉鎮天氣預報-苗栗縣未來1週天氣預報</string>
+    <string name="broad_title_10">鄉鎮天氣預報-彰化縣未來2天天氣預報</string>
+    <string name="broad_title_11">鄉鎮天氣預報-彰化縣未來1週天氣預報</string>
+    <string name="broad_title_12">鄉鎮天氣預報-南投縣未來2天天氣預報</string>
+    <string name="broad_title_13">鄉鎮天氣預報-南投縣未來1週天氣預報</string>
+    <string name="broad_title_14">鄉鎮天氣預報-南投縣未來1週天氣預報</string>
+    <string name="broad_title_15">鄉鎮天氣預報-雲林縣未來2天天氣預報</string>
+    <string name="broad_title_16">鄉鎮天氣預報-雲林縣未來1週天氣預報</string>
+    <string name="broad_title_17">鄉鎮天氣預報-嘉義縣未來2天天氣預報</string>
+    <string name="broad_title_18">鄉鎮天氣預報-嘉義縣未來1週天氣預報</string>
+    <string name="broad_title_19">鄉鎮天氣預報-屏東縣未來2天天氣預報</string>
+    <string name="broad_title_20">鄉鎮天氣預報-屏東縣未來1週天氣預報</string>
+    <string name="broad_title_21">鄉鎮天氣預報-臺東縣未來2天天氣預報</string>
+    <string name="broad_title_22">鄉鎮天氣預報-臺東縣未來1週天氣預報</string>
+    <string name="broad_title_23">鄉鎮天氣預報-花蓮縣未來2天天氣預報</string>
+    <string name="broad_title_24">鄉鎮天氣預報-花蓮縣未來1週天氣預報</string>
+    <string name="broad_title_25">鄉鎮天氣預報-澎湖縣未來2天天氣預報</string>
+    <string name="broad_title_26">鄉鎮天氣預報-澎湖縣未來1週天氣預報</string>
+    <string name="broad_title_27">鄉鎮天氣預報-基隆縣未來2天天氣預報</string>
+    <string name="broad_title_28">鄉鎮天氣預報-基隆縣未來1週天氣預報</string>
+    <string name="broad_title_29">鄉鎮天氣預報-新竹市未來2天天氣預報</string>
+    <string name="broad_title_30">鄉鎮天氣預報-新竹市未來1週天氣預報</string>
+    <string name="broad_title_31">鄉鎮天氣預報-嘉義市未來2天天氣預報</string>
+    <string name="broad_title_32">鄉鎮天氣預報-嘉義市未來1週天氣預報</string>
+    <string name="broad_title_33">鄉鎮天氣預報-臺北市未來2天天氣預報</string>
+    <string name="broad_title_34">鄉鎮天氣預報-臺北市未來1週天氣預報</string>
+    <string name="broad_title_35">鄉鎮天氣預報-高雄市未來2天天氣預報</string>
+    <string name="broad_title_36">鄉鎮天氣預報-高雄市未來1週天氣預報</string>
+    <string name="broad_title_37">鄉鎮天氣預報-新北市未來2天天氣預報</string>
+    <string name="broad_title_38">鄉鎮天氣預報-新北市未來1週天氣預報</string>
+    <string name="broad_title_39">鄉鎮天氣預報-臺中市未來2天天氣預報</string>
+    <string name="broad_title_40">鄉鎮天氣預報-臺中市未來1週天氣預報</string>
+    <string name="broad_title_41">鄉鎮天氣預報-臺南市未來2天天氣預報</string>
+    <string name="broad_title_42">鄉鎮天氣預報-臺南市未來1週天氣預報</string>
+    <string name="broad_title_43">鄉鎮天氣預報-連江市未來2天天氣預報</string>
+    <string name="broad_title_44">鄉鎮天氣預報-連江縣未來1週天氣預報</string>
+    <string name="broad_title_45">鄉鎮天氣預報-金門市未來2天天氣預報</string>
+    <string name="broad_title_46">鄉鎮天氣預報-金門縣未來1週天氣預報</string>
+    <string name="broad_title_47">鄉鎮天氣預報-臺灣未來 2 天天氣預報</string>
+    <string name="broad_title_48">鄉鎮天氣預報-臺灣未來一週天氣預報</string>
+    <string name="broad_title_49">潮汐預報-未來 1 個月潮汐預報</string>
+
+
+    <string name="please_select">請選擇下方需要的服務</string>
+    <string name="broadcast">預報</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">安安</string>
+</resources>

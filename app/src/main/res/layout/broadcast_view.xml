@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <TextView
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center"
+        android:background="@color/green_lite"
+        android:textColor="@color/black"
+        android:textSize="@dimen/big_text_size"
+        android:id="@+id/broadcast_title"
+        android:text="@string/broadcast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:contentDescription="@null"
+        android:src="@drawable/down"
+        android:id="@+id/broadcast_icon"
+        app:layout_constraintTop_toTopOf="@id/broadcast_title"
+        app:layout_constraintBottom_toBottomOf="@id/broadcast_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="70dp"
+        android:layout_width="@dimen/broadcast_icon_width"
+        android:layout_height="0dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/broadcast_recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/broadcast_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
