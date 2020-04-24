@@ -56,5 +56,11 @@
     <string name="broadcast">預報</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">安安</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="permission">權限通知</string>
+    <string name="is_open_notification">是否開啟定位權限呢?</string>
+    <string name="confirm">確定</string>
+    <string name="cancel">取消</string>
+    <string name="current_weather">地區一周天氣預報</string>
+
 </resources>

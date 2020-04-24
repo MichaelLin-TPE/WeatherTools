@@ -1,7 +1,6 @@
-package com.weather.weathertools.fragment;
+package com.weather.weathertools.fragment.broadcast_2days;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,34 +13,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.weather.weathertools.R;
-import com.weather.weathertools.fragment.json_parser.WeatherLocation;
+import com.weather.weathertools.fragment.BroadcastAdapter;
+import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 
 import java.util.ArrayList;
 
 
-public class Broadcast36hrFragment extends Fragment implements Broadcast36hrVu{
-
+public class Broadcast2DaysFragment extends Fragment implements Broadcast2DaysVu{
 
     private String apiUrl;
 
     private Context context;
 
-    private Broadcast36hrPresenter presenter;
-
     private RecyclerView recyclerView;
 
-    public static Broadcast36hrFragment newInstance(String url) {
-        Broadcast36hrFragment fragment = new Broadcast36hrFragment();
-        Bundle args = new Bundle();
-        args.putString("api_url",url);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private Broadcast2DaysPresenter presenter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    public static Broadcast2DaysFragment newInstance(String apiUrl) {
+        Broadcast2DaysFragment fragment = new Broadcast2DaysFragment();
+        Bundle args = new Bundle();
+        args.putString("api_url", apiUrl);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -52,39 +51,39 @@ public class Broadcast36hrFragment extends Fragment implements Broadcast36hrVu{
         presenter.onStartGetData(apiUrl);
     }
 
-    private void initBundle() {
-        if (getArguments() != null) {
-            apiUrl = getArguments().getString("api_url");
-        }
+    private void initPresenter() {
+        presenter = new Broadcast2DaysPresenterImpl(this);
     }
 
-    private void initPresenter() {
-        presenter = new Broadcast36hrPresenterImpl(this);
+    private void initBundle() {
+        if (getArguments() != null) {
+            apiUrl = getArguments().getString("api_url","");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_broadcast36hr, container, false);
+        View view = inflater.inflate(R.layout.fragment_broadcast2_days, container, false);
         initView(view);
         return view;
     }
 
     private void initView(View view) {
-        recyclerView = view.findViewById(R.id.broadcast_36hr_recycler_view);
+        recyclerView = view.findViewById(R.id.broadcast_2days_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL));
     }
 
 
     @Override
-    public void setRecyclerView(ArrayList<WeatherLocation> dataArray) {
-        final BroadcastAdapter adapter = new BroadcastAdapter(dataArray,context);
+    public void setRecyclerView(ArrayList<WeatherTwoDaysLocation> location) {
+        Broadcast2DaysAdapter adapter = new Broadcast2DaysAdapter(location,context);
         recyclerView.setAdapter(adapter);
         adapter.setOnBroadcastItemClickListener(new BroadcastAdapter.OnBroadcastItemClickListener() {
             @Override
             public void onClick() {
+
             }
         });
     }

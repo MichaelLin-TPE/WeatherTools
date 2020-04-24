@@ -1,4 +1,4 @@
-package com.weather.weathertools.fragment;
+package com.weather.weathertools.fragment.broadcast_one_week;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,28 +14,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.weather.weathertools.R;
-import com.weather.weathertools.fragment.json_parser.thirty_hours.WeatherLocation;
+import com.weather.weathertools.fragment.BroadcastAdapter;
+import com.weather.weathertools.fragment.broadcast_2days.Broacast2DaysItemAdapter;
+import com.weather.weathertools.fragment.broadcast_2days.OneWeekItemAdapter;
+import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 
 import java.util.ArrayList;
 
-public class BroadcastAdapter extends RecyclerView.Adapter<BroadcastAdapter.ViewHolder> {
-    private ArrayList<WeatherLocation> dataArray;
+public class OneWeekAdapter extends RecyclerView.Adapter<OneWeekAdapter.ViewHolder> {
 
-    private Context context;
-
-    private OnBroadcastItemClickListener listener;
+    private ArrayList<WeatherTwoDaysLocation> dataArray;
 
     private ArrayList<Boolean> isOpenArray;
 
-    public void setOnBroadcastItemClickListener(OnBroadcastItemClickListener listener){
+    private Context context;
+
+    private BroadcastAdapter.OnBroadcastItemClickListener listener;
+
+    public void setOnBroadcastItemClickListener(BroadcastAdapter.OnBroadcastItemClickListener listener){
         this.listener = listener;
     }
 
-    public BroadcastAdapter(ArrayList<WeatherLocation> dataArray, Context context) {
+    public OneWeekAdapter(ArrayList<WeatherTwoDaysLocation> dataArray, Context context) {
         this.dataArray = dataArray;
         this.context = context;
         isOpenArray = new ArrayList<>();
-        for (WeatherLocation data : dataArray){
+        for (WeatherTwoDaysLocation data : dataArray){
             isOpenArray.add(false);
         }
     }
@@ -48,9 +52,9 @@ public class BroadcastAdapter extends RecyclerView.Adapter<BroadcastAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        WeatherLocation data = dataArray.get(position);
+        WeatherTwoDaysLocation data = dataArray.get(position);
         holder.tvTitle.setText(data.getLocationName());
-        final BroacastItemAdapter adapter = new BroacastItemAdapter(data.getWeatherElement(),context);
+        OneWeekItemAdapter adapter = new OneWeekItemAdapter(data.getWeatherElement(),context);
         holder.recyclerView.setAdapter(adapter);
 
         if (isOpenArray.get(position)){
@@ -102,7 +106,6 @@ public class BroadcastAdapter extends RecyclerView.Adapter<BroadcastAdapter.View
             }
         }
     }
-
     public interface OnBroadcastItemClickListener{
         void onClick();
     }

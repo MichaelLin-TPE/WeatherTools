@@ -1,6 +1,7 @@
 package com.weather.weathertools.tools;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.weather.weathertools.R;
@@ -36,7 +37,6 @@ public class TitleProvider {
         braodCastArray.add(context.getString(R.string.broad_title_11));
         braodCastArray.add(context.getString(R.string.broad_title_12));
         braodCastArray.add(context.getString(R.string.broad_title_13));
-        braodCastArray.add(context.getString(R.string.broad_title_14));
         braodCastArray.add(context.getString(R.string.broad_title_15));
         braodCastArray.add(context.getString(R.string.broad_title_16));
         braodCastArray.add(context.getString(R.string.broad_title_17));
@@ -73,5 +73,34 @@ public class TitleProvider {
         braodCastArray.add(context.getString(R.string.broad_title_48));
         braodCastArray.add(context.getString(R.string.broad_title_49));
         return braodCastArray;
+    }
+
+    public ArrayList<String> get3DaysApiUrlArray(){
+        ArrayList<String> apiUrlArray = new ArrayList<>();
+        for (int i = 1 ; i <= 89 ; i += 4){
+            String number;
+            if (i < 10){
+                number = "0"+i;
+            }else {
+                number = i+"";
+            }
+            apiUrlArray.add("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-0"+number+"?Authorization=CWB-CF93991C-7A79-4387-8A8B-D5F583B50AEC&format=JSON&elementName=Wx,PoP6h,AT,CI");
+        }
+        return apiUrlArray;
+    }
+
+    public ArrayList<String> getOneWeekApiUrlArray(){
+        ArrayList<String> apiUrlArray = new ArrayList<>();
+        for (int i = 3 ; i <= 87 ; i +=4){
+            String number;
+            if (i < 10){
+                number = "0"+i;
+            }else {
+                number = i+"";
+            }
+            apiUrlArray.add("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-0"+number+"?Authorization=CWB-CF93991C-7A79-4387-8A8B-D5F583B50AEC&format=JSON&elementName=MaxCI,MinT,MaxT,PoP12h,Wx");
+            Log.i("Michael","迴圈的 I : "+i);
+        }
+        return apiUrlArray;
     }
 }

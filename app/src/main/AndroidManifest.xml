@@ -3,6 +3,10 @@
     package="com.weather.weathertools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 精確定位，就是 GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 約略定位，就是 WI-FI -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"

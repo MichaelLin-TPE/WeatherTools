@@ -1,4 +1,4 @@
-package com.weather.weathertools.fragment.json_parser;
+package com.weather.weathertools.fragment.json_parser.thirty_hours;
 
 import com.google.gson.annotations.SerializedName;
 

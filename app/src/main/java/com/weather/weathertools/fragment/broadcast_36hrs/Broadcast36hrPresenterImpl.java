@@ -1,10 +1,10 @@
-package com.weather.weathertools.fragment;
+package com.weather.weathertools.fragment.broadcast_36hrs;
 
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.weather.weathertools.fragment.json_parser.WeatherLocation;
-import com.weather.weathertools.fragment.json_parser.WeatherObject;
+import com.weather.weathertools.fragment.json_parser.thirty_hours.WeatherLocation;
+import com.weather.weathertools.fragment.json_parser.thirty_hours.WeatherObject;
 import com.weather.weathertools.tools.WeatherHttpConnection;
 
 import java.util.ArrayList;

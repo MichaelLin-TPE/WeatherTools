@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.broadcast_36hrs.Broadcast36hrFragment">
+    tools:context=".fragment.broadcast_2days.Broadcast2DaysFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/broadcast_36hr_recycler_view"
+        android:id="@+id/broadcast_2days_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

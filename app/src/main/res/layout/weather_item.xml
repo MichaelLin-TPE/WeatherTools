@@ -93,7 +93,7 @@
         android:contentDescription="@null"
         android:id="@+id/weather_big_icon"
         android:src="@drawable/sun"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="35dp"
         app:layout_constraintLeft_toRightOf="@id/weather_text_temp"
         app:layout_constraintTop_toTopOf="@id/weather_text_temp"
         app:layout_constraintBottom_toBottomOf="@id/weather_icon_comfort"
