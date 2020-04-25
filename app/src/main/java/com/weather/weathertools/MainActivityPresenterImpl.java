@@ -85,6 +85,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         if (city.equals("台北市")){
             city = "臺北市";
         }
+        Log.i("Michael","拆分後是 : "+city+" , "+location);
         for (int i = 0 ; i < oneWeekArray.size() ; i ++){
             if (oneWeekArray.get(i).contains(city+"未來1週天氣")){
                 apiUrlIndex = i;
@@ -115,9 +116,9 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 
             @Override
             public void onFailure(String errorCode) {
-
+                Log.i("Michael","取得首頁資料錯誤 : "+errorCode);
             }
         });
-        Log.i("Michael","拆分後是 : "+city+" , "+location);
+
     }
 }

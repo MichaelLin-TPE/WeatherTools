@@ -27,8 +27,8 @@
     <string name="broad_title_24">鄉鎮天氣預報-花蓮縣未來1週天氣預報</string>
     <string name="broad_title_25">鄉鎮天氣預報-澎湖縣未來2天天氣預報</string>
     <string name="broad_title_26">鄉鎮天氣預報-澎湖縣未來1週天氣預報</string>
-    <string name="broad_title_27">鄉鎮天氣預報-基隆縣未來2天天氣預報</string>
-    <string name="broad_title_28">鄉鎮天氣預報-基隆縣未來1週天氣預報</string>
+    <string name="broad_title_27">鄉鎮天氣預報-基隆市未來2天天氣預報</string>
+    <string name="broad_title_28">鄉鎮天氣預報-基隆市未來1週天氣預報</string>
     <string name="broad_title_29">鄉鎮天氣預報-新竹市未來2天天氣預報</string>
     <string name="broad_title_30">鄉鎮天氣預報-新竹市未來1週天氣預報</string>
     <string name="broad_title_31">鄉鎮天氣預報-嘉義市未來2天天氣預報</string>
@@ -62,5 +62,6 @@
     <string name="confirm">確定</string>
     <string name="cancel">取消</string>
     <string name="current_weather">地區一周天氣預報</string>
+    <string name="add_widget">在桌面新增天氣小工具</string>
 
 </resources>
