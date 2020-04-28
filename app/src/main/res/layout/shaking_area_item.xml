@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shaking_item_click_area"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_marginStart="15dp"
+        tools:text="南投縣"
+        android:padding="5dp"
+        android:id="@+id/shaking_item_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="@dimen/big_text_size"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/shaking_item_icon"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="@id/shaking_item_title"
+        app:layout_constraintBottom_toBottomOf="@id/shaking_item_title"
+        app:layout_constraintLeft_toRightOf="@id/shaking_item_title"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/down"
+        android:layout_width="@dimen/broadcast_icon_width"
+        android:layout_height="@dimen/broadcast_icon_width"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shaking_item_recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/shaking_item_title"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

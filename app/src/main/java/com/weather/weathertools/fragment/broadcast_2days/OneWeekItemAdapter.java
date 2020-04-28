@@ -23,6 +23,7 @@ public class OneWeekItemAdapter extends RecyclerView.Adapter<OneWeekItemAdapter.
 
     private ArrayList<String> minTempArray,comfortArray,rainArray,weatherArray,timeArray,maxTempArray,totalTempArray;
 
+
     public OneWeekItemAdapter(ArrayList<WeatherTwoDaysElement> dataArray, Context context) {
         this.dataArray = dataArray;
         this.context = context;

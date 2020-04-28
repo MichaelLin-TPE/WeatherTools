@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,6 +27,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,7 +40,9 @@ import com.weather.weathertools.fragment.broadcast_2days.Broadcast2DaysFragment;
 import com.weather.weathertools.fragment.broadcast_2days.OneWeekItemAdapter;
 import com.weather.weathertools.fragment.broadcast_36hrs.Broadcast36hrFragment;
 import com.weather.weathertools.fragment.broadcast_one_week.BroadcastOneWeekFragment;
+import com.weather.weathertools.fragment.earthquake.EarthquakeFragment;
 import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysElement;
+import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 import com.weather.weathertools.navigation_view.NavigationPresenter;
 import com.weather.weathertools.navigation_view.NavigationPresenterImpl;
 import com.weather.weathertools.navigation_view.NavigationViewAdapter;
@@ -65,14 +72,22 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     private int permission;
 
-    private TextView tvLocation,tvInfo;
+    private OneWeekItemAdapter adapter;
+
+    private TextView tvLocation,tvInfo,tvBack;
 
     private RecyclerView recyclerView;
 
     private static final int REQUEST_LOCATION = 1;
 
+    private FrameLayout frameLayout;
+
     private static String[] PERMISSION_LOCTION = {"android.permission.ACCESS_FINE_LOCATION"
                                                  ,"android.permission.ACCESS_COARSE_LOCATION"};
+
+    private RecyclerView rvDialog;
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +208,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
     }
 
     private void initView() {
+        frameLayout = findViewById(R.id.main_frame_layout);
+        tvBack = findViewById(R.id.main_navi_back);
         tvInfo = findViewById(R.id.main_info);
         recyclerView = findViewById(R.id.main_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
@@ -201,11 +218,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         navigationRecyclerView = findViewById(R.id.navigation_recycler_view);
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         toolbar = findViewById(R.id.main_toolbar);
+        tvLocation.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onNavigationButtonClickListener();
+            }
+        });
+        tvBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onNavigationBackButtonClickListener();
+            }
+        });
+        tvLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onLocationButtonClickListener();
             }
         });
     }
@@ -248,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         tvInfo.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,Broadcast36hrFragment.newInstance(apiUrl)).commit();
     }
 
@@ -261,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         tvInfo.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout, Broadcast2DaysFragment.newInstance(apiUrl)).commit();
     }
 
@@ -269,13 +301,85 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         tvInfo.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout, BroadcastOneWeekFragment.newInstance(apiUrl)).commit();
     }
 
     @Override
     public void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray) {
-        OneWeekItemAdapter adapter = new OneWeekItemAdapter(dataArray,this);
+
+        adapter = new OneWeekItemAdapter(dataArray,this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void showMainActivity() {
+
+        drawerLayout.closeDrawers();
+        frameLayout.setVisibility(View.GONE);
+        tvLocation.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        tvInfo.setVisibility(View.VISIBLE);
+        toolbar.setTitle(getString(R.string.location_weather));
+    }
+
+    @Override
+    public void replaceEarthquakeFragment(String apiUrl) {
+        tvLocation.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        tvInfo.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
+        fragmentManager.beginTransaction().replace(R.id.main_frame_layout, EarthquakeFragment.newInstance(apiUrl)).commit();
+    }
+
+    @Override
+    public void showLocationDialog(final ArrayList<String> locationArray) {
+        View view = View.inflate(this,R.layout.location_dialog_view,null);
+        rvDialog = view.findViewById(R.id.location_dialog_recycler_view);
+        rvDialog.setLayoutManager(new GridLayoutManager(this,4));
+        Spinner spinner = view.findViewById(R.id.location_dialog_spinner);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,locationArray);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                presenter.onSpinnerItemClickListener(locationArray.get(position),TitleProvider.getInstance(MainActivity.this).getOneWeekApiUrlArray());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //nothing to do
+            }
+        });
+
+        dialog = new AlertDialog.Builder(this)
+                .setView(view).create();
+        dialog.show();
+
+
+
+    }
+
+    @Override
+    public void setDialogRecyclerView(ArrayList<String> locationArray) {
+        final DialogAdapter adapter = new DialogAdapter(locationArray,this);
+        rvDialog.setAdapter(adapter);
+        adapter.setOnDialogItemClickListener(new DialogAdapter.OnDialogItemClickListener() {
+            @Override
+            public void onClick(String location) {
+                adapter.notifyDataSetChanged();
+                Log.i("Michael","點擊了 : "+location);
+                presenter.onDialogItemClickListener(location);
+                dialog.dismiss();
+
+            }
+        });
+    }
+
+    @Override
+    public void setLocationTitle(String location) {
+        tvLocation.setText(String.format(Locale.getDefault(),"您目前所在位置 : %s",location));
     }
 
 

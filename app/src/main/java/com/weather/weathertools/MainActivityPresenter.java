@@ -10,4 +10,12 @@ public interface MainActivityPresenter {
     void onNavigationItemClickListener(String name, ArrayList<String> apiUrlArray, ArrayList<String> oneWeekArray);
 
     void onStartToGetApiData(String address, ArrayList<String> oneWeekApiUrlArray);
+
+    void onNavigationBackButtonClickListener();
+
+    void onLocationButtonClickListener();
+
+    void onSpinnerItemClickListener(String city, ArrayList<String> oneWeekApiUrlArray);
+
+    void onDialogItemClickListener(String location);
 }

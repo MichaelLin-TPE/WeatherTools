@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.weather.weathertools.R;
 import com.weather.weathertools.navigation_view.view.BroadCastAdapter;
 import com.weather.weathertools.navigation_view.view.BroadcastViewHolder;
+import com.weather.weathertools.navigation_view.view.EarthquakeViewHolder;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,7 @@ public class NavigationViewAdapter extends RecyclerView.Adapter {
             case PRE_LOOK:
                 return  null;
             case EARTHQUAKE:
-                return  null;
+                return  new EarthquakeViewHolder(LayoutInflater.from(context).inflate(R.layout.earthquake_view,parent,false),context);
             case WEATHER_STATUS:
                 return null;
                 default:
@@ -62,6 +63,10 @@ public class NavigationViewAdapter extends RecyclerView.Adapter {
         if (holder instanceof BroadcastViewHolder){
             presenter.onBindBroadcastViewHolder((BroadcastViewHolder)holder,position);
             presenter.onNavigationItemClickListener((BroadcastViewHolder)holder,listener);
+        }
+        if (holder instanceof EarthquakeViewHolder){
+            presenter.onBindEarthquakeViewHolder((EarthquakeViewHolder)holder,position);
+            presenter.onNavigationEarthquakeItemClickListener((EarthquakeViewHolder)holder,listener);
         }
     }
 

@@ -52,7 +52,7 @@
     <string name="broad_title_49">潮汐預報-未來 1 個月潮汐預報</string>
 
 
-    <string name="please_select">請選擇下方需要的服務</string>
+    <string name="please_select">請選擇任一地區天氣</string>
     <string name="broadcast">預報</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -63,5 +63,8 @@
     <string name="cancel">取消</string>
     <string name="current_weather">地區一周天氣預報</string>
     <string name="add_widget">在桌面新增天氣小工具</string>
+    <string name="back_to_location">返回</string>
+    <string name="location_weather">目前區域天氣</string>
+    <string name="earthquake">地震報告</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.weather.weathertools;
 
 import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysElement;
+import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 
 import java.util.ArrayList;
 
@@ -20,4 +21,14 @@ public interface MainActivityVu {
     void replaceOneWeekFragment(String s);
 
     void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray);
+
+    void showMainActivity();
+
+    void replaceEarthquakeFragment(String apiUrl);
+
+    void showLocationDialog(ArrayList<String> locationArray);
+
+    void setDialogRecyclerView(ArrayList<String> locationArray);
+
+    void setLocationTitle(String location);
 }
