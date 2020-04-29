@@ -47,6 +47,7 @@ import com.weather.weathertools.navigation_view.NavigationPresenter;
 import com.weather.weathertools.navigation_view.NavigationPresenterImpl;
 import com.weather.weathertools.navigation_view.NavigationViewAdapter;
 import com.weather.weathertools.navigation_view.view.BroadCastAdapter;
+import com.weather.weathertools.tools.LocationService;
 import com.weather.weathertools.tools.TitleProvider;
 
 import java.util.ArrayList;
@@ -83,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
     private FrameLayout frameLayout;
 
     private static String[] PERMISSION_LOCTION = {"android.permission.ACCESS_FINE_LOCATION"
-                                                 ,"android.permission.ACCESS_COARSE_LOCATION"};
+                                                 ,"android.permission.ACCESS_COARSE_LOCATION"
+                                                 ,"android.permission.ACCESS_BACKGROUND_LOCATION"};
 
     private RecyclerView rvDialog;
 
@@ -102,12 +104,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         verifyLocationPermissions(this);
 
 
+        //startService
+        Log.i("Michael","開始 intent Srvices");
+        Intent it = new Intent(this,LocationService.class);
+        startService(it);
+
     }
     //取得權限
     private void verifyLocationPermissions(MainActivity mainActivity) {
         try{
             permission = ActivityCompat.checkSelfPermission(mainActivity,
                     "android.permission.ACCESS_FINE_LOCATION");
+
             if (permission != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(mainActivity,PERMISSION_LOCTION,REQUEST_LOCATION);
             }else {

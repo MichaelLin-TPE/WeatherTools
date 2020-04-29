@@ -1,27 +1,37 @@
 package com.weather.weathertools.widget_view;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.TaskInfo;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.RemoteViews;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.weather.weathertools.MainActivity;
 import com.weather.weathertools.R;
 import com.weather.weathertools.fragment.json_parser.WeatherBegin;
 import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
-import com.weather.weathertools.fragment.json_parser.thirty_hours.WeatherLocation;
 import com.weather.weathertools.tools.AppWidgetAlarm;
 import com.weather.weathertools.tools.TitleProvider;
 import com.weather.weathertools.tools.WeatherHttpConnection;
@@ -42,11 +52,16 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
 
     private GoogleApiClient googleApiClient;
 
-    private Location location;
-
     private Context context;
 
     private Gson gson;
+
+    private int permission;
+
+    private static final int REQUEST_LOCATION = 1;
+
+    private static String[] PERMISSION_LOCTION = {"android.permission.ACCESS_FINE_LOCATION"
+            ,"android.permission.ACCESS_COARSE_LOCATION"};
 
     public static final String ACTION_AUTO_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
 
@@ -60,126 +75,24 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
         //點選桌面元件時進入主程式入口
         Intent intent = new Intent(context, MainActivity.class);
         pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        //RemoteViews類描述了一個View物件能夠顯示在其他程序中，可以融合layout資原始檔實現佈局。
-        //雖然該類在android.widget.RemoteViews而不是appWidget下面,但在Android Widgets開發中會經常用到它，
-        //主要是可以跨程序呼叫(appWidget由一個服務宿主來統一執行的)。
-        myRemoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_view);
 
-        //myRemoteViews.setImageViewResource(R.id.imageView, R.drawable.png1);//設定佈局控制元件的屬性（要特別注意）
 
-        buildGoogleApiClient();
+        buildGoogleApiClient(context);
 
-        changeWidgetView();
+
 
     }
 
-    private void changeWidgetView() {
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (location != null){
-            Log.i("Michael",String.format("%s: %f", "經度 : ", location.getLatitude()));
-            Log.i("Michael",String.format("%s: %f", "緯度 : ", location.getLongitude()));
-            String address = getAddressByLocation(location);
-            Log.i("Michael","目前所在的地址 : "+address);
-            int strIndex = address.indexOf("灣");
-            address = getAddressByLocation(location).substring(strIndex+1,strIndex+7);
-            String city = address.substring(0,3);
-            final String location = address.substring(3,6);
-            if (city.equals("台北市")){
-                city = "臺北市";
-            }
-            ArrayList<String> titleArray = TitleProvider.getInstance(context).getBroadCastArray();
-            ArrayList<String> apiUrlArray = TitleProvider.getInstance(context).getOneWeekApiUrlArray();
-            String apiUrl = null;
-            ArrayList<String> allOneWeekArray = new ArrayList<>();
-            for (String title : titleArray){
-                if (title.contains("1週")){
-                    allOneWeekArray.add(title);
-                }
-            }
+    private void buildGoogleApiClient(Context context) {
+            this.context = context;
+            googleApiClient = new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            googleApiClient.connect();
+            Log.i("Michael","GPS已連線");
 
-            for (int i = 0 ; i < allOneWeekArray.size() ; i ++){
-                if (allOneWeekArray.get(i).contains(city+"未來1週天氣")){
-                    apiUrl =apiUrlArray.get(i);
-                    break;
-                }
-            }
-            if (apiUrl != null){
-                WeatherHttpConnection connection = new WeatherHttpConnection();
-                connection.execute(apiUrl);
-                connection.setOnConnectionListener(new WeatherHttpConnection.OnConnectionListener() {
-                    @Override
-                    public void onSuccessful(String result) {
-                        Log.i("Michael","Widget Get Data : "+result);
-                        WeatherBegin data = gson.fromJson(result,WeatherBegin.class);
-                        WeatherTwoDaysLocation loc = null;
-                        for (WeatherTwoDaysLocation locationWeather : data.getRecords().getLocations().get(0).getLocation()){
-                            if (locationWeather.getLocationName().equals(location)){
-                                loc = locationWeather;
-                            }
-                        }
-
-                        if (loc != null){
-                            myRemoteViews.setTextViewText(R.id.widget_location,location);
-                            String weatherState = null;
-                            String temp = null;
-                            for (int i = 0 ; i < loc.getWeatherElement().size() ; i ++){
-                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("MaxT")){
-                                    temp = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue()+"°C";
-                                }
-                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("Wx")){
-                                    weatherState = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue();
-                                }
-                                if (temp != null && weatherState != null){
-                                    break;
-                                }
-                            }
-                            if (weatherState != null && temp != null){
-
-                                myRemoteViews.setTextViewText(R.id.widget_temp,temp);
-
-                                if (weatherState.contains("雨")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.rain);
-                                }else if (weatherState.contains("陰")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
-                                }else if (weatherState.contains("晴")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.sun);
-                                }else {
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
-                                }
-                                myRemoteViews.setOnClickPendingIntent(R.id.widget_click_area, pendingIntent);
-                                myComponentName = new ComponentName(context, WidgetActivity.class);
-                                //負責管理AppWidget，向AppwidgetProvider傳送通知。提供了更新AppWidget狀態，獲取已經安裝的Appwidget提供資訊和其他的相關狀態
-                                myAppWidgetManager = AppWidgetManager.getInstance(context);
-                                myAppWidgetManager.updateAppWidget(myComponentName, myRemoteViews);
-
-                            }else {
-                                Log.i("Michael","資料 == null");
-                            }
-
-                        }else {
-                            Log.i("Michael","loc == null");
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(String errorCode) {
-                        Log.i("Michael","widget Data fail : "+errorCode);
-                    }
-                });
-            }else {
-                Log.i("Michael","apiUrl == null");
-            }
-        }
-    }
-
-    private void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        googleApiClient.connect();
     }
 
     /**
@@ -231,119 +144,151 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("onReceive");
         super.onReceive(context, intent);
+        this.context = context;
         Log.i("Michael","onReceive");
         if (intent.getAction() != null){
             if (intent.getAction().equals(ACTION_AUTO_UPDATE)){
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                ComponentName thisAppWidgetComponentName = new ComponentName(context.getPackageName(),getClass().getName());
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName);
-                onUpdate(context,appWidgetManager,appWidgetIds);
+                Log.i("Michael","開始處理更新");
+
+                verifyLocationPermissions();
             }
         }else {
             Log.i("Michael","intent == null");
         }
     }
 
+    //取得權限
+    private void verifyLocationPermissions() {
+        try{
+            permission = ActivityCompat.checkSelfPermission(context,
+                    "android.permission.ACCESS_FINE_LOCATION");
+            if (permission != PackageManager.PERMISSION_GRANTED){
+                Log.i("Michael","沒權限");
+            }else {
+                buildGoogleApiClient(context);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (location != null){
-            Log.i("Michael",String.format("%s: %f", "經度 : ", location.getLatitude()));
-            Log.i("Michael",String.format("%s: %f", "緯度 : ", location.getLongitude()));
-            String address = getAddressByLocation(location);
-            Log.i("Michael","目前所在的地址 : "+address);
-            int strIndex = address.indexOf("灣");
-            address = getAddressByLocation(location).substring(strIndex+1,strIndex+7);
-            String city = address.substring(0,3);
-            final String location = address.substring(3,6);
-            if (city.equals("台北市")){
-                city = "臺北市";
-            }
-            ArrayList<String> titleArray = TitleProvider.getInstance(context).getBroadCastArray();
-            ArrayList<String> apiUrlArray = TitleProvider.getInstance(context).getOneWeekApiUrlArray();
-            String apiUrl = null;
-            ArrayList<String> allOneWeekArray = new ArrayList<>();
-            for (String title : titleArray){
-                if (title.contains("1週")){
-                    allOneWeekArray.add(title);
-                }
-            }
 
-            for (int i = 0 ; i < allOneWeekArray.size() ; i ++){
-                if (allOneWeekArray.get(i).contains(city+"未來1週天氣")){
-                    apiUrl =apiUrlArray.get(i);
-                    break;
-                }
-            }
-            if (apiUrl != null){
-                WeatherHttpConnection connection = new WeatherHttpConnection();
-                connection.execute(apiUrl);
-                connection.setOnConnectionListener(new WeatherHttpConnection.OnConnectionListener() {
+        if (googleApiClient != null){
+            try{
+                FusedLocationProviderClient client = new FusedLocationProviderClient(context);
+                Task<Location> currentLocationTask = client.getLastLocation();
+                currentLocationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
-                    public void onSuccessful(String result) {
-                        Log.i("Michael","Widget Get Data : "+result);
-                        WeatherBegin data = gson.fromJson(result,WeatherBegin.class);
-                        WeatherTwoDaysLocation loc = null;
-                        for (WeatherTwoDaysLocation locationWeather : data.getRecords().getLocations().get(0).getLocation()){
-                            if (locationWeather.getLocationName().equals(location)){
-                                loc = locationWeather;
+                    public void onSuccess(Location location) {
+                        try{
+                            String address = getAddressByLocation(location);
+                            Log.i("Michael","目前所在的地址 : "+address);
+                            int strIndex = address.indexOf("灣");
+                            address = getAddressByLocation(location).substring(strIndex+1,strIndex+7);
+                            String city = address.substring(0,3);
+                            final String locationName = address.substring(3,6);
+                            if (city.equals("台北市")){
+                                city = "臺北市";
                             }
-                        }
+                            ArrayList<String> titleArray = TitleProvider.getInstance(context).getBroadCastArray();
+                            ArrayList<String> apiUrlArray = TitleProvider.getInstance(context).getOneWeekApiUrlArray();
+                            String apiUrl = null;
+                            ArrayList<String> allOneWeekArray = new ArrayList<>();
+                            for (String title : titleArray){
+                                if (title.contains("1週")){
+                                    allOneWeekArray.add(title);
+                                }
+                            }
 
-                        if (loc != null){
-                            myRemoteViews.setTextViewText(R.id.widget_location,location);
-                            String weatherState = null;
-                            String temp = null;
-                            for (int i = 0 ; i < loc.getWeatherElement().size() ; i ++){
-                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("MaxT")){
-                                    temp = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue()+"°C";
-                                }
-                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("Wx")){
-                                    weatherState = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue();
-                                }
-                                if (temp != null && weatherState != null){
+                            for (int i = 0 ; i < allOneWeekArray.size() ; i ++){
+                                if (allOneWeekArray.get(i).contains(city+"未來1週天氣")){
+                                    apiUrl =apiUrlArray.get(i);
                                     break;
                                 }
                             }
-                            if (weatherState != null && temp != null){
+                            if (apiUrl != null){
+                                WeatherHttpConnection connection = new WeatherHttpConnection();
+                                connection.execute(apiUrl);
+                                connection.setOnConnectionListener(new WeatherHttpConnection.OnConnectionListener() {
+                                    @Override
+                                    public void onSuccessful(String result) {
+                                        gson = new Gson();
+                                        Log.i("Michael","Widget Get Data : "+result);
+                                        WeatherBegin data = gson.fromJson(result,WeatherBegin.class);
+                                        WeatherTwoDaysLocation loc = null;
+                                        for (WeatherTwoDaysLocation locationWeather : data.getRecords().getLocations().get(0).getLocation()){
+                                            if (locationWeather.getLocationName().equals(locationName)){
+                                                loc = locationWeather;
+                                            }
+                                        }
 
-                                myRemoteViews.setTextViewText(R.id.widget_temp,temp);
+                                        if (loc != null){
+                                            myRemoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_view);
+                                            myRemoteViews.setTextViewText(R.id.widget_location,locationName);
+                                            String weatherState = null;
+                                            String temp = null;
+                                            for (int i = 0 ; i < loc.getWeatherElement().size() ; i ++){
+                                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("MaxT")){
+                                                    temp = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue()+"°C";
+                                                }
+                                                if (loc.getWeatherElement().get(i).getElemtNmae().equals("Wx")){
+                                                    weatherState = loc.getWeatherElement().get(i).getTime().get(0).getElementValue().get(0).getValue();
+                                                }
+                                                if (temp != null && weatherState != null){
+                                                    break;
+                                                }
+                                            }
+                                            if (weatherState != null && temp != null){
 
-                                if (weatherState.contains("雨")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.rain);
-                                }else if (weatherState.contains("陰")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
-                                }else if (weatherState.contains("晴")){
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.sun);
-                                }else {
-                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
-                                }
-                                myRemoteViews.setOnClickPendingIntent(R.id.widget_click_area, pendingIntent);
-                                myComponentName = new ComponentName(context, WidgetActivity.class);
-                                //負責管理AppWidget，向AppwidgetProvider傳送通知。提供了更新AppWidget狀態，獲取已經安裝的Appwidget提供資訊和其他的相關狀態
-                                myAppWidgetManager = AppWidgetManager.getInstance(context);
-                                myAppWidgetManager.updateAppWidget(myComponentName, myRemoteViews);
+                                                myRemoteViews.setTextViewText(R.id.widget_temp,temp);
 
+                                                if (weatherState.contains("雨")){
+                                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.rain);
+                                                }else if (weatherState.contains("陰")){
+                                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
+                                                }else if (weatherState.contains("晴")){
+                                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.sun);
+                                                }else {
+                                                    myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
+                                                }
+                                                myRemoteViews.setOnClickPendingIntent(R.id.widget_click_area, pendingIntent);
+                                                myComponentName = new ComponentName(context, WidgetActivity.class);
+                                                //負責管理AppWidget，向AppwidgetProvider傳送通知。提供了更新AppWidget狀態，獲取已經安裝的Appwidget提供資訊和其他的相關狀態
+                                                myAppWidgetManager = AppWidgetManager.getInstance(context);
+                                                myAppWidgetManager.updateAppWidget(myComponentName, myRemoteViews);
+
+                                            }else {
+                                                Log.i("Michael","資料 == null");
+                                            }
+
+                                        }else {
+                                            Log.i("Michael","loc == null");
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(String errorCode) {
+                                        Log.i("Michael","widget Data fail : "+errorCode);
+                                    }
+                                });
                             }else {
-                                Log.i("Michael","資料 == null");
+                                Log.i("Michael","apiUrl == null");
                             }
 
-                        }else {
-                            Log.i("Michael","loc == null");
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
-
-                    }
-
-                    @Override
-                    public void onFailure(String errorCode) {
-                        Log.i("Michael","widget Data fail : "+errorCode);
                     }
                 });
-            }else {
-                Log.i("Michael","apiUrl == null");
+            }catch (Exception e){
+                e.printStackTrace();
             }
+        }else {
+            Log.i("Michael","googleApiClient == null");
         }
     }
 

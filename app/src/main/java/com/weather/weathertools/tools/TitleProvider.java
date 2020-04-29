@@ -99,7 +99,6 @@ public class TitleProvider {
                 number = i+"";
             }
             apiUrlArray.add("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-0"+number+"?Authorization=CWB-CF93991C-7A79-4387-8A8B-D5F583B50AEC&format=JSON&elementName=MaxCI,MinT,MaxT,PoP12h,Wx");
-            Log.i("Michael","迴圈的 I : "+i);
         }
         return apiUrlArray;
     }
