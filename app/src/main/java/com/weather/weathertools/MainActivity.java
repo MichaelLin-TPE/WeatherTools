@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
 
         //startService
-        Log.i("Michael","開始 intent Srvices");
-        Intent it = new Intent(this,LocationService.class);
-        startService(it);
+//        Log.i("Michael","開始 intent Srvices");
+//        Intent it = new Intent(this,LocationService.class);
+//        startService(it);
 
     }
     //取得權限

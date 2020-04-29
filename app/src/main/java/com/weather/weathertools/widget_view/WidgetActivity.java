@@ -56,13 +56,6 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
 
     private Gson gson;
 
-    private int permission;
-
-    private static final int REQUEST_LOCATION = 1;
-
-    private static String[] PERMISSION_LOCTION = {"android.permission.ACCESS_FINE_LOCATION"
-            ,"android.permission.ACCESS_COARSE_LOCATION"};
-
     public static final String ACTION_AUTO_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
 
     @Override
@@ -75,8 +68,8 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
         //點選桌面元件時進入主程式入口
         Intent intent = new Intent(context, MainActivity.class);
         pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-
+        myRemoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_view);
+        myRemoteViews.setOnClickPendingIntent(R.id.widget_click_area,pendingIntent);
         buildGoogleApiClient(context);
 
 
@@ -151,27 +144,23 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
             if (intent.getAction().equals(ACTION_AUTO_UPDATE)){
                 Log.i("Michael","開始處理更新");
 
-                verifyLocationPermissions();
+                //新方法 棄用暫時
+//                String address = intent.getStringExtra("address");
+//                if (address != null){
+//                    Log.i("Michael","接到的地址是 : "+address);
+//                    updateWidget(address);
+//                }
+
+
+                //就方法
+                buildGoogleApiClient(context);
             }
         }else {
             Log.i("Michael","intent == null");
         }
     }
 
-    //取得權限
-    private void verifyLocationPermissions() {
-        try{
-            permission = ActivityCompat.checkSelfPermission(context,
-                    "android.permission.ACCESS_FINE_LOCATION");
-            if (permission != PackageManager.PERMISSION_GRANTED){
-                Log.i("Michael","沒權限");
-            }else {
-                buildGoogleApiClient(context);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -254,6 +243,9 @@ public class WidgetActivity extends AppWidgetProvider implements GoogleApiClient
                                                 }else {
                                                     myRemoteViews.setImageViewResource(R.id.widget_icon,R.drawable.cloudy);
                                                 }
+                                                Intent intent = new Intent(context, MainActivity.class);
+                                                pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
                                                 myRemoteViews.setOnClickPendingIntent(R.id.widget_click_area, pendingIntent);
                                                 myComponentName = new ComponentName(context, WidgetActivity.class);
                                                 //負責管理AppWidget，向AppwidgetProvider傳送通知。提供了更新AppWidget狀態，獲取已經安裝的Appwidget提供資訊和其他的相關狀態

@@ -2,6 +2,7 @@ package com.weather.weathertools.tools;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.weather.weathertools.widget_view.WidgetActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -42,12 +44,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private Runnable showTime = new Runnable() {
         @Override
         public void run() {
-            handler.postDelayed(this, 5000);
+            handler.postDelayed(this, 20000);
             Log.i("Michael", "開始取得GPS位置 每10秒取一次");
 
             buildGoogleApiClient();
-
-
         }
     };
 
@@ -100,55 +100,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                     if (location != null) {
                         String address = getCurrentLocation(location);
                         Log.i("Michael", "取得地址 : " + address);
+
+                        Intent alarmIntent = new Intent(WidgetActivity.ACTION_AUTO_UPDATE);
+                        alarmIntent.putExtra("address",address);
+                        sendBroadcast(alarmIntent);
                     } else {
                         Log.i("Michael", "location == null 即將更新 location");
-                        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-                        LocationListener locationListener = new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                Log.i("Michael","onLocationChanged");
-                                makeUseOfNewLocation(location);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-                        };
-                        // Register the listener with the Location Manager to receive location updates
-                        if (locationManager != null){
-
-                            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                    && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                Log.i("Michael","Not Enough Permission");
-                                Toast.makeText(getApplicationContext(), "Not Enough Permission", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            Log.i("Michael","requestLocationUpdates");
-                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-                            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                        }else {
-                            Log.i("Michael","locationManager == null");
-                        }
-
                     }
 
                 }
