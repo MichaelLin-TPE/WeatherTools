@@ -17,6 +17,7 @@
             android:id="@+id/main_toolbar"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/weather_tools"
+            android:background="@drawable/toolbar_background"
             app:navigationIcon="@drawable/list"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"/>

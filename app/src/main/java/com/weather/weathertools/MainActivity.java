@@ -83,10 +83,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     private FrameLayout frameLayout;
 
-    private static String[] PERMISSION_LOCTION = {"android.permission.ACCESS_FINE_LOCATION"
+    private static String[] PERMISSION_LOCATION = {"android.permission.ACCESS_FINE_LOCATION"
                                                  ,"android.permission.ACCESS_COARSE_LOCATION"
                                                  ,"android.permission.ACCESS_BACKGROUND_LOCATION"};
-
     private RecyclerView rvDialog;
 
     private AlertDialog dialog;
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
                     "android.permission.ACCESS_FINE_LOCATION");
 
             if (permission != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(mainActivity,PERMISSION_LOCTION,REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(mainActivity,PERMISSION_LOCATION,REQUEST_LOCATION);
             }else {
                 buildGoogleApiClient();
             }
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
                         buildGoogleApiClient();
                     }
                 }else {
-                    ActivityCompat.requestPermissions(MainActivity.this, PERMISSION_LOCTION, REQUEST_LOCATION);
+                    ActivityCompat.requestPermissions(MainActivity.this, PERMISSION_LOCATION, REQUEST_LOCATION);
                 }
                 break;
         }
