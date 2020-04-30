@@ -23,6 +23,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 
     private ArrayList<WeatherTwoDaysLocation> locationSelectArray;
 
+    private double latitude,longitude;
+
     public MainActivityPresenterImpl(MainActivityVu mView) {
         this.mView = mView;
         gson = new Gson();
@@ -85,7 +87,9 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
-    public void onStartToGetApiData(String address, ArrayList<String> oneWeekApiUrlArray) {
+    public void onStartToGetApiData(String address, ArrayList<String> oneWeekApiUrlArray, final double latitude, final double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         String city = address.substring(0,3);
         final String location = address.substring(3,6);
         if (city.equals("台北市")){
@@ -117,7 +121,20 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
                         }
                     }
                     if (currentLocation != null){
-                        mView.setRecyclerView(currentLocation.getWeatherElement());
+                        mView.hideProgress(true);
+                        mView.setRecyclerView(currentLocation.getWeatherElement(),latitude,longitude);
+                        String weatherStatus = "";
+                        for (int i = 0 ; i < currentLocation.getWeatherElement().size() ; i ++){
+                            for (int j = 0 ; j < currentLocation.getWeatherElement().get(i).getTime().size() ; j++){
+                                if (currentLocation.getWeatherElement().get(i).getElemtNmae().equals("Wx")){
+                                    weatherStatus = currentLocation.getWeatherElement().get(i).getTime().get(j).getElementValue().get(0).getValue();
+                                    break;
+                                }
+                            }
+                        }
+                        if (!weatherStatus.isEmpty()){
+                            mView.setBackground(weatherStatus);
+                        }
                     }
                 }
 
@@ -169,7 +186,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
-    public void onSpinnerItemClickListener(String city, ArrayList<String> oneWeekApiUrlArray) {
+    public void onSpinnerItemClickListener(final String city, ArrayList<String> oneWeekApiUrlArray) {
         for (int i = 0 ; i < oneWeekArray.size() ; i ++){
             if (oneWeekArray.get(i).contains(city+"未來1週天氣")){
                 apiUrlIndex = i;
@@ -191,7 +208,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
                         locationArray.add(loc.getLocationName());
                     }
                     if (locationArray.size() != 0){
-                        mView.setDialogRecyclerView(locationArray);
+                        mView.setDialogRecyclerView(city,locationArray);
                     }
                 }
             }
@@ -221,7 +238,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             }
         }
         if (locationData != null){
-            mView.setRecyclerView(locationData.getWeatherElement());
+            mView.setRecyclerView(locationData.getWeatherElement(), latitude, longitude);
         }
 
     }

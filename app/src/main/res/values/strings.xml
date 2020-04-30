@@ -68,5 +68,8 @@
     <string name="earthquake">地震報告</string>
     <string name="information_fail">資料異常</string>
     <string name="get_error_code">取得資料失敗 :</string>
+    <string name="forecast">預報</string>
+    <string name="map">地圖</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

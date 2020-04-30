@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/main_background"
+    android:layout_height="wrap_content">
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:text="@string/forecast"
+        android:textColor="@color/white"
+        android:textSize="@dimen/big_text_size"
+        android:padding="5dp"
+        android:id="@+id/forecast_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <View
+        android:id="@+id/forecast_line"
+        app:layout_constraintTop_toBottomOf="@id/forecast_title"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@id/forecast_line"
+        android:layout_marginTop="5dp"
+        android:id="@+id/forecast_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,8 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#7C7C7C</color>
-    <color name="blue_lite">#A0AEFC</color>
+    <color name="blue_lite">#C0C8F3</color>
     <color name="green_lite">#C7EE9B</color>
     <color name="blue">#0B2CE6</color>
+    <color name="weather_background_color">#A66F6D6D</color>
 </resources>

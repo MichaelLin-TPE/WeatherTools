@@ -9,7 +9,7 @@ public interface MainActivityPresenter {
 
     void onNavigationItemClickListener(String name, ArrayList<String> apiUrlArray, ArrayList<String> oneWeekArray);
 
-    void onStartToGetApiData(String address, ArrayList<String> oneWeekApiUrlArray);
+    void onStartToGetApiData(String address, ArrayList<String> oneWeekApiUrlArray, double latitude, double longitude);
 
     void onNavigationBackButtonClickListener();
 

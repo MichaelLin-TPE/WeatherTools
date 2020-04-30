@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -27,9 +28,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -42,12 +45,13 @@ import com.weather.weathertools.fragment.broadcast_36hrs.Broadcast36hrFragment;
 import com.weather.weathertools.fragment.broadcast_one_week.BroadcastOneWeekFragment;
 import com.weather.weathertools.fragment.earthquake.EarthquakeFragment;
 import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysElement;
-import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 import com.weather.weathertools.navigation_view.NavigationPresenter;
 import com.weather.weathertools.navigation_view.NavigationPresenterImpl;
 import com.weather.weathertools.navigation_view.NavigationViewAdapter;
 import com.weather.weathertools.navigation_view.view.BroadCastAdapter;
-import com.weather.weathertools.tools.LocationService;
+import com.weather.weathertools.status_presenter.StatusPresenter;
+import com.weather.weathertools.status_presenter.StatusPresenterImpl;
+import com.weather.weathertools.tools.ItemSpace;
 import com.weather.weathertools.tools.TitleProvider;
 
 import java.util.ArrayList;
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     private OneWeekItemAdapter adapter;
 
-    private TextView tvLocation,tvInfo,tvBack;
+    private TextView tvLocation,tvBack;
 
     private RecyclerView recyclerView;
 
@@ -90,9 +94,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     private AlertDialog dialog;
 
+    private StatusPresenter statusPresenter;
+
+    private String city;
+
+    private ProgressBar progressBar;
+
+    private MainActivityAdapter activityAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
         initPresenter();
@@ -215,11 +229,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
     }
 
     private void initView() {
+        progressBar = findViewById(R.id.main_progress);
         frameLayout = findViewById(R.id.main_frame_layout);
         tvBack = findViewById(R.id.main_navi_back);
-        tvInfo = findViewById(R.id.main_info);
         recyclerView = findViewById(R.id.main_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         tvLocation = findViewById(R.id.main_address);
         drawerLayout = findViewById(R.id.main_drawer_layout);
         navigationRecyclerView = findViewById(R.id.navigation_recycler_view);
@@ -249,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     private void initPresenter() {
         presenter = new MainActivityPresenterImpl(this);
+        statusPresenter = new StatusPresenterImpl();
         navigationPresenter = new NavigationPresenterImpl();
     }
 
@@ -282,41 +297,48 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     @Override
     public void replace36hrFragment(String apiUrl) {
-        tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        tvInfo.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,Broadcast36hrFragment.newInstance(apiUrl)).commit();
     }
 
     @Override
     public void setTitle(String name) {
-        toolbar.setTitle(name);
+        tvLocation.setText(name);
     }
 
     @Override
     public void replace2DaysFragment(String apiUrl) {
-        tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        tvInfo.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout, Broadcast2DaysFragment.newInstance(apiUrl)).commit();
     }
 
     @Override
     public void replaceOneWeekFragment(String apiUrl) {
-        tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        tvInfo.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout, BroadcastOneWeekFragment.newInstance(apiUrl)).commit();
     }
 
     @Override
-    public void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray) {
+    public void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray, double latitude, double longitude) {
 
-        adapter = new OneWeekItemAdapter(dataArray,this);
-        recyclerView.setAdapter(adapter);
+        if (activityAdapter != null){
+            statusPresenter.setData(dataArray);
+            statusPresenter.setLocation(latitude,longitude);
+            activityAdapter.notifyDataSetChanged();
+            return;
+        }
+        statusPresenter.setData(dataArray);
+        statusPresenter.setLocation(latitude,longitude);
+        activityAdapter = new MainActivityAdapter(statusPresenter,this);
+        int space = 40;
+        recyclerView.addItemDecoration(new ItemSpace(space));
+        recyclerView.setAdapter(activityAdapter);
+
+//        adapter = new OneWeekItemAdapter(dataArray,this);
+//        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -326,15 +348,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         frameLayout.setVisibility(View.GONE);
         tvLocation.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-        tvInfo.setVisibility(View.VISIBLE);
-        toolbar.setTitle(getString(R.string.location_weather));
+        tvLocation.setText(getString(R.string.location_weather));
     }
 
     @Override
     public void replaceEarthquakeFragment(String apiUrl) {
         tvLocation.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        tvInfo.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout, EarthquakeFragment.newInstance(apiUrl)).commit();
     }
@@ -369,7 +389,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
     }
 
     @Override
-    public void setDialogRecyclerView(ArrayList<String> locationArray) {
+    public void setDialogRecyclerView(String city, ArrayList<String> locationArray) {
+        this.city = city;
         final DialogAdapter adapter = new DialogAdapter(locationArray,this);
         rvDialog.setAdapter(adapter);
         adapter.setOnDialogItemClickListener(new DialogAdapter.OnDialogItemClickListener() {
@@ -386,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
 
     @Override
     public void setLocationTitle(String location) {
-        tvLocation.setText(String.format(Locale.getDefault(),"您目前所在位置 : %s",location));
+        tvLocation.setText(String.format(Locale.getDefault(),"位置 : %s%s",city,location));
     }
 
     @Override
@@ -408,6 +429,23 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         dialog.show();
     }
 
+    @Override
+    public void setBackground(String weatherStatus) {
+        Log.i("Michael","天氣狀態 : "+weatherStatus);
+        if (weatherStatus.contains("晴")){
+            drawerLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.sun_background));
+        }else if (weatherStatus.contains("雲")){
+            drawerLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.cloudy_background));
+        }else if (weatherStatus.contains("雨")){
+            drawerLayout.setBackground(ContextCompat.getDrawable(this,R.drawable.rain_background));
+        }
+    }
+
+    @Override
+    public void hideProgress(boolean isShow) {
+        progressBar.setVisibility(isShow ? View.GONE : View.VISIBLE);
+    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -419,9 +457,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
             Log.i("Michael","目前所在的地址 : "+address);
             int strIndex = address.indexOf("灣");
             address = getAddressByLocation(location).substring(strIndex+1,strIndex+7);
+
             Log.i("Michael","擷取後的字串 : "+address);
-            tvLocation.setText(String.format(Locale.getDefault(),"您目前所在位置 : %s",address));
-            presenter.onStartToGetApiData(address,TitleProvider.getInstance(this).getOneWeekApiUrlArray());
+            tvLocation.setText(String.format(Locale.getDefault(),"位置 : %s",address));
+            presenter.onStartToGetApiData(address,TitleProvider.getInstance(this).getOneWeekApiUrlArray(),location.getLatitude(),location.getLongitude());
 
         }else {
             Log.i("Michael","目前偵測不到位置");

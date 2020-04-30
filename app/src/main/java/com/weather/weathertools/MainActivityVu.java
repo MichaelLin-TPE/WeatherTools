@@ -1,7 +1,6 @@
 package com.weather.weathertools;
 
 import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysElement;
-import com.weather.weathertools.fragment.json_parser.WeatherTwoDaysLocation;
 
 import java.util.ArrayList;
 
@@ -20,7 +19,7 @@ public interface MainActivityVu {
 
     void replaceOneWeekFragment(String s);
 
-    void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray);
+    void setRecyclerView(ArrayList<WeatherTwoDaysElement> dataArray, double latitude, double longitude);
 
     void showMainActivity();
 
@@ -28,9 +27,13 @@ public interface MainActivityVu {
 
     void showLocationDialog(ArrayList<String> locationArray);
 
-    void setDialogRecyclerView(ArrayList<String> locationArray);
+    void setDialogRecyclerView(String city, ArrayList<String> locationArray);
 
     void setLocationTitle(String location);
 
     void showErrorCodeDialog(String errorCode);
+
+    void setBackground(String weatherStatus);
+
+    void hideProgress(boolean isShow);
 }

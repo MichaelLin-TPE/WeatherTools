@@ -43,4 +43,7 @@ dependencies {
     //下載圖片
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
+    //Map
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
 }
