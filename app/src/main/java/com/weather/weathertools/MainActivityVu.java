@@ -31,4 +31,6 @@ public interface MainActivityVu {
     void setDialogRecyclerView(ArrayList<String> locationArray);
 
     void setLocationTitle(String location);
+
+    void showErrorCodeDialog(String errorCode);
 }

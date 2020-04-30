@@ -66,5 +66,7 @@
     <string name="back_to_location">返回</string>
     <string name="location_weather">目前區域天氣</string>
     <string name="earthquake">地震報告</string>
+    <string name="information_fail">資料異常</string>
+    <string name="get_error_code">取得資料失敗 :</string>
 
 </resources>

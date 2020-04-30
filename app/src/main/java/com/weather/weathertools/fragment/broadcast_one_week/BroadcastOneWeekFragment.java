@@ -1,6 +1,8 @@
 package com.weather.weathertools.fragment.broadcast_one_week;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -89,5 +91,24 @@ public class BroadcastOneWeekFragment extends Fragment implements BroadcastOneWe
 
             }
         });
+    }
+
+    @Override
+    public void showErrorCodeDialog(String errorCode) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(getString(R.string.information_fail))
+                .setMessage(getString(R.string.get_error_code)+errorCode)
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        dialog.show();
     }
 }

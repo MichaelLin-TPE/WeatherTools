@@ -390,6 +390,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityVu, G
         tvLocation.setText(String.format(Locale.getDefault(),"您目前所在位置 : %s",location));
     }
 
+    @Override
+    public void showErrorCodeDialog(String errorCode) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.information_fail))
+                .setMessage(getString(R.string.get_error_code)+errorCode)
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        dialog.show();
+    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

@@ -1,6 +1,8 @@
 package com.weather.weathertools.fragment.broadcast_36hrs;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -88,5 +90,24 @@ public class Broadcast36hrFragment extends Fragment implements Broadcast36hrVu{
                 //這裡只是拿來接點擊事件而已 不做任何事情
             }
         });
+    }
+
+    @Override
+    public void showErrorCodeDialog(String errorCode) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(getString(R.string.information_fail))
+                .setMessage(getString(R.string.get_error_code)+errorCode)
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        dialog.show();
     }
 }

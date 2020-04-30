@@ -34,6 +34,7 @@ public class BroadcastOneWeekPresenterImpl implements BroadcastOneWeekPresenter 
             @Override
             public void onFailure(String errorCode) {
                 Log.i("Michael",errorCode);
+                mView.showErrorCodeDialog(errorCode);
             }
         });
     }

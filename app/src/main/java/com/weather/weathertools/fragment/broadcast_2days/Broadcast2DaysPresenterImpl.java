@@ -33,6 +33,7 @@ public class Broadcast2DaysPresenterImpl implements Broadcast2DaysPresenter {
             @Override
             public void onFailure(String errorCode) {
                 Log.i("Michael","錯誤 : "+errorCode);
+                mView.showErrorCodeDialog(errorCode);
             }
         });
     }

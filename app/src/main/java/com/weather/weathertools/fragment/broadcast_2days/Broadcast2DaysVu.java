@@ -6,4 +6,6 @@ import java.util.ArrayList;
 
 public interface Broadcast2DaysVu {
     void setRecyclerView(ArrayList<WeatherTwoDaysLocation> location);
+
+    void showErrorCodeDialog(String errorCode);
 }

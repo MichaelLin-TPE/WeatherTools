@@ -36,6 +36,7 @@ public class Broadcast36hrPresenterImpl implements Broadcast36hrPresenter {
             @Override
             public void onFailure(String errorCode) {
                 Log.i("Michael","錯誤 : "+errorCode);
+                mView.showErrorCodeDialog(errorCode);
             }
         });
     }

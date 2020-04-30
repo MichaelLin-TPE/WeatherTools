@@ -199,6 +199,10 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             @Override
             public void onFailure(String errorCode) {
                 Log.i("Michael","錯誤 : "+errorCode);
+
+                mView.showErrorCodeDialog(errorCode);
+
+
             }
         });
     }
